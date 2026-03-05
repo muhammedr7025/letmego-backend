@@ -287,22 +287,14 @@ class AdminDashboardService(AbstractService):
         return result.scalars().all()
 
     async def update_slot_status(self, slot_id: uuid.UUID, new_status: str, reason: Optional[str] = None):
-        from apps.api.parking.models import ParkingSlot, SlotStatusLog
+        from apps.api.parking.models import ParkingSlot
         from avcfastapi.core.exception.request import InvalidRequestException
-        
+
         slot = await self.session.scalar(select(ParkingSlot).where(ParkingSlot.id == slot_id))
         if not slot:
             raise InvalidRequestException("Parking slot not found", error_code="SLOT_NOT_FOUND")
-        
-        old_status = slot.status
+
         slot.status = new_status
-        
-            old_status=old_status,
-            new_status=new_status,
-            reason=reason or "Updated by Super Admin",
-            # changed_by_id=admin_id if available, but for now we skip or just add notes
-        )
-        self.session.add(log_entry)
         self.session.add(slot)
         await self.session.commit()
         await self.session.refresh(slot)

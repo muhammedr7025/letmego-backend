@@ -9,6 +9,7 @@ from apps.api.admin.schema import (
     VehicleWithCountsSchema,
     UserSchema,
     UserRoleUpdate,
+    SlotStatusUpdate,
 )
 from apps.api.admin.service import AdminDashboardServiceDependency
 from apps.api.auth.dependency import AdminUserDependency
